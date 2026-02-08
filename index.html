@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLI Santosh Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.2.4",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react-dom": "https://esm.sh/react-dom@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "lucide-react": "https://esm.sh/lucide-react@0.460.0"
+      }
+    }
+    </script>
+  <script type="module" crossorigin src="/Pli-calculator/assets/index-h22iCPkB.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <div id="root"></div>
+<button id="voiceBtn" style="
+position:fixed;
+bottom:20px;
+right:20px;
+width:60px;
+height:60px;
+border-radius:50%;
+background:#007bff;
+color:white;
+font-size:24px;
+border:none;
+cursor:pointer;
+z-index:9999;
+">🎤</button>
+
+<script>
+
+const voiceBtn=document.getElementById("voiceBtn");
+
+function speak(text){
+const speech=new SpeechSynthesisUtterance(text);
+speech.lang="hi-IN";
+window.speechSynthesis.speak(speech);
+}
+
+function listen(callback){
+const recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
+recognition.lang="en-IN";
+recognition.start();
+recognition.onresult=function(e){
+callback(e.results[0][0].transcript);
+};
+}
+
+function calculateAge(dob){
+const birth=new Date(dob);
+const today=new Date();
+return today.getFullYear()-birth.getFullYear();
+}
+
+function convertSum(text){
+text=text.toLowerCase();
+if(text.includes("lakh")){
+let n=parseInt(text);
+return n*100000;
+}
+return parseInt(text);
+}
+
+voiceBtn.onclick=function(){
+
+speak("अपनी जन्म तिथि बताएं");
+
+listen(function(dob){
+
+document.querySelector("input").value=calculateAge(dob);
+
+speak("maturity age बताएं");
+
+listen(function(term){
+
+document.querySelectorAll("select")[0].value=parseInt(term);
+
+speak("sum assured बताएं");
+
+listen(function(sum){
+
+document.querySelectorAll("input")[1].value=convertSum(sum);
+
+});
+
+});
+
+});
+
+};
+
+</script>
+
+</body>
+</html>
